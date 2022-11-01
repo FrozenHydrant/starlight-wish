@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 
 #bot setup
 load_dotenv()
-APP_ID = os.environ['APP-ID']
-APP_SECRET = os.environ['APP-SECRET']
+#APP_ID = os.environ['APP-ID']
+#APP_SECRET = os.environ['APP-SECRET']
 TOKEN = os.environ['TOKEN']
 my_bot = commands.Bot(command_prefix="ricky ")
 
@@ -898,29 +898,31 @@ class Gacha(commands.Cog):
                                           "%Y-%m-%d %H:%M:%S")
         delta_time = datetime.now() - cooldown_time
         #print("cooldown: ", cooldown_time, " deltatime ", delta_time, " dts ", delta_time.seconds)
-        if delta_time.seconds > 18000 or delta_time.days > 0:
-            user_data["gachaWishCount"] = True
+        #if delta_time.seconds > 18000 or delta_time.days > 0:
+        if delta_time.days > 0:
+            user_data["gachaWishCount"] = 10
+        user_data["gachaWishCount"] = max(10, user_data["gachaWishCount"] + delta_time.seconds / 1800)
 
 
         #for testing only
         if user_id == "328039243303616523":
-            user_data["gachaWishCount"] = True
+            user_data["gachaWishCount"] = 10
         #print("Database ID:", id(db[user_id]), "Cache ID:", id(user_data))
         #print("Database Things:", db[user_id], "Cache Things:", user_data)
         #user_data["gachaWishCount"] = True
         #gacha_loot["Nanahira"] += 5
         #print("Database Things:", db[user_id], "\n\nCache Things:", CACHE[user_id], "\n\nUSERDATA THINGS:", user_data, "\n\n\n\n\n")
 
-        if user_data["gachaWishCount"]:
+        if user_data["gachaWishCount"] > 0:
             #make up for lost time pulls:
-            number_of_pulls = 10#round(
+            number_of_pulls = 1#round(
                 #(delta_time.days * 86400 + delta_time.seconds) / 1800)
             await ctx.send(
-                f"{ctx.author.mention} has unleashed **{number_of_pulls}** pulls!!."
+                f"""{ctx.author.mention} has unleashed **{number_of_pulls}** pulls!!, and has **{user_data["gachaWishCount"] - 1}** pulls left."""
             )
             #print(number_of_pulls)
             #return
-            user_data["gachaWishCount"] = False
+            user_data["gachaWishCount"] -= number_of_pulls
             user_data["gachaCooldown"] = (
                 datetime.now()).strftime("%Y-%m-%d %H:%M:%S")
             current_pulls = {}
