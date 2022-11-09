@@ -878,11 +878,11 @@ class Gacha(commands.Cog):
         user_data = self.get_data(ctx.author)
         user_id = str(ctx.author.id)
 
-        if user_id != "328039243303616523":
-            return
+        #if user_id != "328039243303616523":
+        #    return
 
         if "gachaWishCount" not in user_data:
-            user_data["gachaWishCount"] = True
+            user_data["gachaWishCount"] = 10
         if "gachaCooldown" not in user_data:
             user_data["gachaCooldown"] = (
                 datetime.now()).strftime("%Y-%m-%d %H:%M:%S")
@@ -901,12 +901,15 @@ class Gacha(commands.Cog):
         #if delta_time.seconds > 18000 or delta_time.days > 0:
         if delta_time.days > 0:
             user_data["gachaWishCount"] = 10
-        user_data["gachaWishCount"] = max(10, user_data["gachaWishCount"] + delta_time.seconds / 1800)
+        else:
+            user_data["gachaWishCount"] = user_data["gachaWishCount"] + delta_time.seconds / 1800
+            if user_data["gachaWishCount"] > 10:
+                user_data["gachaWishCount"] = 10
 
 
         #for testing only
-        if user_id == "328039243303616523":
-            user_data["gachaWishCount"] = 10
+        #if user_id == "328039243303616523":
+        #    user_data["gachaWishCount"] = 10
         #print("Database ID:", id(db[user_id]), "Cache ID:", id(user_data))
         #print("Database Things:", db[user_id], "Cache Things:", user_data)
         #user_data["gachaWishCount"] = True
